@@ -3,17 +3,17 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { TrendingUp, Briefcase, Trophy, Plus, Zap, Brain, Search } from "lucide-react";
+import { TrendingUp, Briefcase, Trophy, CalendarDays, Zap, Brain, Search } from "lucide-react";
 import WalletConnect from "@/components/ui/WalletConnect";
 import SearchOverlay from "@/components/layout/SearchOverlay";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/",               label: "Markets",      icon: TrendingUp },
-  { href: "/portfolio",      label: "Portfolio",    icon: Briefcase },
-  { href: "/leaderboard",    label: "Leaderboard",  icon: Trophy },
-  { href: "/markets/create", label: "Create",       icon: Plus },
-  { href: "/analytics",      label: "AI Analytics", icon: Brain },
+  { href: "/",            label: "Markets",      icon: TrendingUp },
+  { href: "/portfolio",   label: "Portfolio",    icon: Briefcase },
+  { href: "/leaderboard", label: "Leaderboard",  icon: Trophy },
+  { href: "/tournament",  label: "Fixtures",     icon: CalendarDays },
+  { href: "/analytics",   label: "AI Analytics", icon: Brain },
 ];
 
 export default function Navbar() {

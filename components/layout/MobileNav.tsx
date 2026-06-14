@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TrendingUp, Briefcase, Trophy, Plus, Brain } from "lucide-react";
+import { TrendingUp, Briefcase, Trophy, CalendarDays, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LEFT_LINKS = [
@@ -10,8 +10,8 @@ const LEFT_LINKS = [
 ];
 
 const RIGHT_LINKS = [
-  { href: "/markets/create", label: "Create", icon: Plus },
-  { href: "/analytics",      label: "AI",     icon: Brain },
+  { href: "/tournament", label: "Fixtures", icon: CalendarDays },
+  { href: "/analytics",  label: "AI",       icon: Brain },
 ];
 
 export default function MobileNav() {

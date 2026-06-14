@@ -8,6 +8,8 @@ export const wagmiConfig = createConfig({
   connectors: [
     injected({ shimDisconnect: true }),
   ],
+  // EIP-6963: auto-discovers all installed wallet extensions on desktop
+  multiInjectedProviderDiscovery: true,
   transports: {
     [base.id]: fallback([
       http("https://mainnet.base.org"),

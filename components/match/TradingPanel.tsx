@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { parseUnits, formatUnits, keccak256, toBytes, type Hash } from "viem";
-import { Info, ArrowRight, CheckCircle, Wallet, Lock, Clock, AlertCircle, Rocket } from "lucide-react";
+import { Info, ArrowRight, CheckCircle, Wallet, Lock, Clock, AlertCircle, Rocket, ExternalLink } from "lucide-react";
 import type { Market } from "@/lib/types";
 import { formatUSDC, formatProbability, formatPrice, cn } from "@/lib/utils";
 import Button from "@/components/ui/Button";
@@ -38,6 +38,17 @@ function claimError(err: unknown): string {
   return "We're still calculating the win ratios. Please check back in a few minutes.";
 }
 
+function saveBetToPortfolio(params: {
+  txHash: string; marketId: string; question: string;
+  outcome: string; amount: string;
+}) {
+  try {
+    const existing = JSON.parse(localStorage.getItem("basebetz_bets") ?? "[]");
+    existing.unshift({ ...params, timestamp: new Date().toISOString() });
+    localStorage.setItem("basebetz_bets", JSON.stringify(existing.slice(0, 50)));
+  } catch { /* non-critical */ }
+}
+
 export default function TradingPanel({ market }: TradingPanelProps) {
   const { address, isConnected } = useAccount();
 
@@ -47,6 +58,7 @@ export default function TradingPanel({ market }: TradingPanelProps) {
   const [approveHash, setApproveHash]   = useState<Hash | undefined>();
   const [buyHash,     setBuyHash]       = useState<Hash | undefined>();
   const [deployHash,  setDeployHash]    = useState<Hash | undefined>();
+  const [lastTxHash,  setLastTxHash]    = useState<Hash | undefined>();
   const [txError, setTxError] = useState<string | null>(null);
 
   const contractAddress = market.contractAddress as `0x${string}` | undefined;
@@ -125,20 +137,37 @@ export default function TradingPanel({ market }: TradingPanelProps) {
 
   // After buy confirms → success
   useEffect(() => {
-    if (buySuccess && step === "buying") {
+    if (buySuccess && step === "buying" && buyHash) {
+      setLastTxHash(buyHash);
+      saveBetToPortfolio({
+        txHash: buyHash,
+        marketId: market.id,
+        question: market.question,
+        outcome: selectedIndex !== null ? (market.outcomes[selectedIndex]?.label ?? "") : "",
+        amount,
+      });
       setStep("success");
-      setTimeout(() => { setStep("idle"); setAmount(""); setSelectedIndex(null); setBuyHash(undefined); }, 4000);
+      setTimeout(() => { setStep("idle"); setAmount(""); setSelectedIndex(null); setBuyHash(undefined); setLastTxHash(undefined); }, 8000);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buySuccess, step]);
 
   // After deployAndBuy confirms → sync address to MongoDB, then reload
   useEffect(() => {
-    if (deploySuccess && step === "deploying") {
+    if (deploySuccess && step === "deploying" && deployHash) {
+      setLastTxHash(deployHash);
+      saveBetToPortfolio({
+        txHash: deployHash,
+        marketId: market.id,
+        question: market.question,
+        outcome: selectedIndex !== null ? (market.outcomes[selectedIndex]?.label ?? "") : "",
+        amount,
+      });
       setStep("success");
-      // Sync new contract address to MongoDB then refresh page
       fetch(`/api/market/${market.id}/sync`, { method: "POST" })
-        .finally(() => setTimeout(() => window.location.reload(), 2500));
+        .finally(() => setTimeout(() => window.location.reload(), 4000));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deploySuccess, step, market.id]);
 
   const needsApproval = allowance !== undefined && usdcRaw > 0n && allowance < usdcRaw;
@@ -334,9 +363,20 @@ export default function TradingPanel({ market }: TradingPanelProps) {
         )}
 
         {step === "success" ? (
-          <div className="flex items-center justify-center gap-2 py-3 bg-bb-green/8 border border-bb-green/25 rounded-lg text-bb-green text-sm font-heading font-semibold">
-            <CheckCircle size={16} />
-            Market deployed! Refreshing…
+          <div className="bg-bb-green/8 border border-bb-green/25 rounded-lg p-3 space-y-2">
+            <div className="flex items-center justify-center gap-2 text-bb-green text-sm font-heading font-semibold">
+              <CheckCircle size={16} /> Market deployed! Refreshing…
+            </div>
+            {lastTxHash && (
+              <a
+                href={`https://basescan.org/tx/${lastTxHash}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 text-bb-blue text-[11px] font-mono hover:underline"
+              >
+                <ExternalLink size={11} />
+                {lastTxHash.slice(0, 12)}…{lastTxHash.slice(-8)} · View on Basescan
+              </a>
+            )}
           </div>
         ) : needsApproval && step !== "approved" ? (
           <div className="space-y-2">
@@ -558,9 +598,20 @@ export default function TradingPanel({ market }: TradingPanelProps) {
 
       {/* CTA */}
       {step === "success" ? (
-        <div className="flex items-center justify-center gap-2 py-3 bg-bb-green/8 border border-bb-green/25 rounded-lg text-bb-green text-sm font-heading font-semibold">
-          <CheckCircle size={16} />
-          Position confirmed on Base!
+        <div className="bg-bb-green/8 border border-bb-green/25 rounded-lg p-3 space-y-2">
+          <div className="flex items-center justify-center gap-2 text-bb-green text-sm font-heading font-semibold">
+            <CheckCircle size={16} /> Position confirmed on Base!
+          </div>
+          {lastTxHash && (
+            <a
+              href={`https://basescan.org/tx/${lastTxHash}`}
+              target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 text-bb-blue text-[11px] font-mono hover:underline"
+            >
+              <ExternalLink size={11} />
+              {lastTxHash.slice(0, 12)}…{lastTxHash.slice(-8)} · View on Basescan
+            </a>
+          )}
         </div>
       ) : needsApproval && step !== "approved" ? (
         <div className="space-y-2">
