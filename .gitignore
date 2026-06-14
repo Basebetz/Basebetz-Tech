@@ -1,0 +1,54 @@
+# dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# env files — never commit secrets
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# package manager locks (keep npm lock, ignore others)
+yarn.lock
+pnpm-lock.yaml
+.pnp
+.pnp.js
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# vercel
+.vercel
+
+# turbo
+.turbo
+
+# PDFs and design documents — never commit to source
+*.pdf
+*.PDF
+
+# Local HTML exports
+basebetz-betting-process.html
+
+# Solidity build artifacts (contracts live in separate repo)
+cache/
+broadcast/
