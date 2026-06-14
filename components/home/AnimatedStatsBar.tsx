@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
-import { TrendingUp, Activity, Users, Zap, ArrowUpRight, type LucideIcon } from "lucide-react";
+import { Activity, Users, Zap, ArrowUpRight, type LucideIcon } from "lucide-react";
 
 interface StatConfig {
   label: string;
@@ -18,17 +18,6 @@ interface StatConfig {
 }
 
 const STATS: StatConfig[] = [
-  {
-    label:     "Total Volume",
-    rawValue:  382,
-    displayFn: v => `$${(v / 100).toFixed(2)}M`,
-    sub:       "+18% 24h",
-    subUp:     true,
-    icon:      TrendingUp,
-    colorCls:  "text-bb-gold",
-    borderCls: "stat-gold",
-    badge:     null,
-  },
   {
     label:     "Active Markets",
     rawValue:  48,
@@ -145,7 +134,7 @@ function StatCard({ stat, index }: { stat: StatConfig; index: number }) {
 
 export default function AnimatedStatsBar() {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
       {STATS.map((stat, i) => (
         <StatCard key={stat.label} stat={stat} index={i} />
       ))}

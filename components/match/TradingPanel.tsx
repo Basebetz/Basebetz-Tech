@@ -40,13 +40,23 @@ function claimError(err: unknown): string {
 
 function saveBetToPortfolio(params: {
   txHash: string; marketId: string; question: string;
-  outcome: string; amount: string;
+  outcome: string; amount: string; walletAddress?: string;
 }) {
+  const record = { ...params, timestamp: new Date().toISOString() };
   try {
     const existing = JSON.parse(localStorage.getItem("basebetz_bets") ?? "[]");
-    existing.unshift({ ...params, timestamp: new Date().toISOString() });
+    existing.unshift(record);
     localStorage.setItem("basebetz_bets", JSON.stringify(existing.slice(0, 50)));
   } catch { /* non-critical */ }
+
+  // Record on server so leaderboard and analytics update
+  if (params.walletAddress) {
+    fetch("/api/trades", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(record),
+    }).catch(() => { /* non-critical — localStorage is source of truth */ });
+  }
 }
 
 export default function TradingPanel({ market }: TradingPanelProps) {
@@ -151,6 +161,7 @@ export default function TradingPanel({ market }: TradingPanelProps) {
         question: market.question,
         outcome: selectedIndex !== null ? (market.outcomes[selectedIndex]?.label ?? "") : "",
         amount,
+        walletAddress: address,
       });
       setStep("success");
       setTimeout(() => { setStep("idle"); setAmount(""); setSelectedIndex(null); setBuyHash(undefined); setLastTxHash(undefined); }, 8000);
@@ -168,6 +179,7 @@ export default function TradingPanel({ market }: TradingPanelProps) {
         question: market.question,
         outcome: selectedIndex !== null ? (market.outcomes[selectedIndex]?.label ?? "") : "",
         amount,
+        walletAddress: address,
       });
       setStep("success");
       fetch(`/api/market/${market.id}/sync`, { method: "POST" })

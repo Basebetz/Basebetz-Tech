@@ -1,16 +1,6 @@
-import { TrendingUp, Activity, Users, Zap, ArrowUpRight } from "lucide-react";
+import { Activity, Users, Zap, ArrowUpRight } from "lucide-react";
 
 const STATS = [
-  {
-    label:     "Total Volume",
-    value:     "$3.82M",
-    sub:       "+18% 24h",
-    subUp:     true,
-    icon:      TrendingUp,
-    colorCls:  "text-bb-gold",
-    borderCls: "stat-gold",
-    badge:     null,
-  },
   {
     label:     "Active Markets",
     value:     "48",
@@ -45,7 +35,7 @@ const STATS = [
 
 export default function StatsBar() {
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10">
       {STATS.map(({ label, value, sub, subUp, icon: Icon, colorCls, borderCls, badge }) => (
         <div
           key={label}

@@ -1,22 +1,8 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WalletBalances from "@/components/portfolio/WalletBalances";
-import PortfolioStatsCard from "@/components/portfolio/PortfolioStats";
+import PortfolioStatsLive from "@/components/portfolio/PortfolioStatsLive";
 import { Briefcase } from "lucide-react";
-import type { PortfolioStats } from "@/lib/types";
-
-const EMPTY_STATS: PortfolioStats = {
-  totalValue: 0,
-  totalCost: 0,
-  unrealizedPnl: 0,
-  realizedPnl: 0,
-  totalPnl: 0,
-  roi: 0,
-  winRate: 0,
-  openPositions: 0,
-  settledPositions: 0,
-  claimableAmount: 0,
-};
 
 export default function PortfolioPage() {
   return (
@@ -37,9 +23,9 @@ export default function PortfolioPage() {
         {/* Live wallet balances + positions (client-side, reads localStorage) */}
         <WalletBalances />
 
-        {/* Stats summary */}
+        {/* Stats summary — computed from localStorage bets + market statuses */}
         <div className="mt-8">
-          <PortfolioStatsCard stats={EMPTY_STATS} />
+          <PortfolioStatsLive />
         </div>
       </main>
 

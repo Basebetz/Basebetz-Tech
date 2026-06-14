@@ -210,7 +210,9 @@ export async function fetchWorldCupMatches(): Promise<Match[]> {
     }
 
     const data = await res.json();
-    return (data.matches ?? []).map(buildMatch);
+    const matches: Match[] = (data.matches ?? []).map(buildMatch);
+
+    return matches;
   } catch (err) {
     console.error("[football-api] Fetch failed:", err);
     return [];
