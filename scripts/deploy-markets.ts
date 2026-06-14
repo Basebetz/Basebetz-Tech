@@ -27,7 +27,7 @@ import { MongoClient } from "mongodb";
 
 const FACTORY_ADDRESS = "0xc3C717f281Eb8151888f625256A365eC0d6b8f41" as const;
 const TRADING_CLOSE_OFFSET = 300n;
-const DISPUTE_WINDOW       = 7200n;
+const DISPUTE_WINDOW       = 600n; // 10 minutes
 const DRY_RUN = process.env.DRY_RUN === "true";
 
 // MarketCreated event signature

@@ -2,7 +2,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import WalletBalances from "@/components/portfolio/WalletBalances";
 import PortfolioStatsCard from "@/components/portfolio/PortfolioStats";
-import PositionsTable from "@/components/portfolio/PositionsTable";
 import { Briefcase } from "lucide-react";
 import type { PortfolioStats } from "@/lib/types";
 
@@ -31,24 +30,16 @@ export default function PortfolioPage() {
           </div>
           <div>
             <h1 className="font-display font-bold text-3xl text-bb-text">Portfolio</h1>
-            <p className="text-bb-text-3 text-sm font-mono">Your positions, P&amp;L, and settlement claims</p>
+            <p className="text-bb-text-3 text-sm font-mono">Your positions, balances, and settlement claims</p>
           </div>
         </div>
 
-        {/* Live wallet balances + bet history */}
-        <div className="mb-8">
-          <WalletBalances />
-        </div>
+        {/* Live wallet balances + positions (client-side, reads localStorage) */}
+        <WalletBalances />
 
         {/* Stats summary */}
-        <div className="mb-8">
+        <div className="mt-8">
           <PortfolioStatsCard stats={EMPTY_STATS} />
-        </div>
-
-        {/* Positions table */}
-        <div>
-          <h2 className="font-heading font-bold text-lg text-bb-text uppercase tracking-wide mb-4">Positions</h2>
-          <PositionsTable positions={[]} />
         </div>
       </main>
 

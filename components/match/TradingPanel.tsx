@@ -98,13 +98,19 @@ export default function TradingPanel({ market }: TradingPanelProps) {
   const { data: onChainSettled } = useReadContract({
     abi: PREDICTION_MARKET_ABI, address: contractAddress,
     functionName: "settled",
-    query: { enabled: !!contractAddress },
+    query: { enabled: !!contractAddress, refetchInterval: 15_000 },
+  });
+
+  const { data: oraclePostedAt } = useReadContract({
+    abi: PREDICTION_MARKET_ABI, address: contractAddress,
+    functionName: "oraclePostedAt",
+    query: { enabled: !!contractAddress && onChainSettled !== true },
   });
 
   const { data: winningIndex } = useReadContract({
     abi: PREDICTION_MARKET_ABI, address: contractAddress,
     functionName: "winningOutcomeIndex",
-    query: { enabled: !!contractAddress && onChainSettled === true },
+    query: { enabled: !!contractAddress && (onChainSettled === true || (!!oraclePostedAt && oraclePostedAt > 0n)) },
   });
 
   const { data: userWinShares } = useReadContract({
@@ -423,8 +429,14 @@ export default function TradingPanel({ market }: TradingPanelProps) {
   }
 
   if (settled) {
-    // Oracle hasn't posted the result on-chain yet (match finished but cron pending)
     const oracleReady = onChainSettled === true;
+    // oraclePostedAt > 0 means oracle submitted result, dispute window running
+    const oraclePosted = !!oraclePostedAt && oraclePostedAt > 0n;
+    const DISPUTE_WINDOW_SEC = 7200;
+    const claimOpenAt = oraclePosted
+      ? new Date((Number(oraclePostedAt) + DISPUTE_WINDOW_SEC) * 1000)
+      : null;
+    const winLabel = winningIndex !== undefined ? (market.outcomes[Number(winningIndex)]?.label ?? null) : null;
 
     return (
       <div className="panel p-5 space-y-4">
@@ -434,9 +446,11 @@ export default function TradingPanel({ market }: TradingPanelProps) {
             "text-[10px] font-mono uppercase px-2 py-0.5 rounded border",
             oracleReady
               ? "border-bb-green/30 text-bb-green bg-bb-green/8"
+              : oraclePosted
+              ? "border-bb-blue/30 text-bb-blue bg-bb-blue/8"
               : "border-bb-gold/30 text-bb-gold bg-bb-gold/8"
           )}>
-            {oracleReady ? "Settled" : "Finalising"}
+            {oracleReady ? "Settled" : oraclePosted ? "Dispute Window" : "Finalising"}
           </span>
         </div>
         <p className="text-bb-text-2 text-sm">{market.question}</p>
@@ -449,11 +463,34 @@ export default function TradingPanel({ market }: TradingPanelProps) {
         )}
 
         {!oracleReady ? (
-          <div className="py-4 text-center space-y-1">
-            <div className="w-5 h-5 rounded-full border-2 border-bb-gold/30 border-t-bb-gold animate-spin mx-auto mb-2" />
-            <p className="text-bb-text font-heading font-semibold text-sm">Calculating win ratios…</p>
-            <p className="text-bb-text-3 text-xs font-mono">Results are being verified. Check back in a few minutes.</p>
-          </div>
+          oraclePosted ? (
+            <div className="py-3 space-y-3">
+              {winLabel && (
+                <div className="bg-bb-blue/6 border border-bb-blue/20 rounded-lg p-3 text-center">
+                  <p className="text-bb-text-3 text-[10px] font-mono uppercase tracking-widest mb-1">Oracle Result</p>
+                  <p className="text-bb-blue font-heading font-bold text-base">{winLabel}</p>
+                </div>
+              )}
+              <div className="bg-bb-navy border border-bb-border rounded-lg p-3 text-center space-y-1">
+                <Clock size={16} className="text-bb-gold mx-auto mb-1" />
+                <p className="text-bb-text font-heading font-semibold text-sm">2-hour dispute window active</p>
+                <p className="text-bb-text-3 text-xs font-mono">
+                  Anyone can dispute this result until{" "}
+                  {claimOpenAt?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}{" "}
+                  UTC
+                </p>
+                <p className="text-bb-text-3 text-[10px] font-mono mt-0.5">
+                  Claim button unlocks automatically after the window
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="py-4 text-center space-y-1">
+              <div className="w-5 h-5 rounded-full border-2 border-bb-gold/30 border-t-bb-gold animate-spin mx-auto mb-2" />
+              <p className="text-bb-text font-heading font-semibold text-sm">Calculating win ratios…</p>
+              <p className="text-bb-text-3 text-xs font-mono">Results are being verified. Check back in a few minutes.</p>
+            </div>
+          )
         ) : isWinner ? (
           <div className="space-y-2">
             <div className="bg-bb-gold/8 border border-bb-gold/25 rounded-lg p-3 text-center">

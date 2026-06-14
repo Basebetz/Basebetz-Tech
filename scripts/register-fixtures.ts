@@ -83,7 +83,7 @@ const FACTORY_ABI = [
 ] as const;
 
 const TRADING_CLOSE_OFFSET = 300n;
-const DISPUTE_WINDOW       = 7200n;
+const DISPUTE_WINDOW       = 600n; // 10 minutes
 
 async function main() {
   const ORACLE_PRIVATE_KEY = process.env.ORACLE_PRIVATE_KEY as `0x${string}`;
