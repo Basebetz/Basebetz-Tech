@@ -1,0 +1,50 @@
+{
+  "name": "basebetz",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "deploy-markets": "tsx scripts/deploy-markets.ts",
+    "deploy-markets:dry": "DRY_RUN=true tsx scripts/deploy-markets.ts",
+    "repair-markets": "tsx scripts/repair-market-addresses.ts",
+    "deploy-factory": "tsx scripts/deploy-factory.ts",
+    "register-fixtures": "tsx scripts/register-fixtures.ts",
+    "register-fixtures:dry": "DRY_RUN=true tsx scripts/register-fixtures.ts"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@gsap/react": "^2.1.2",
+    "@tanstack/react-query": "^5.101.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "dotenv": "^17.4.2",
+    "framer-motion": "^11.15.0",
+    "gsap": "^3.15.0",
+    "lucide-react": "^0.468.0",
+    "mongodb": "^7.3.0",
+    "next": "14.2.29",
+    "porto": "^0.2.37",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.13.3",
+    "tailwind-merge": "^2.5.5",
+    "viem": "^2.52.2",
+    "wagmi": "^2.19.5",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.29",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.22.4",
+    "typescript": "^5"
+  }
+}
