@@ -1,0 +1,457 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --font-rajdhani: 'Rajdhani', sans-serif;
+  --font-barlow: 'Barlow Condensed', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: #0D1424;
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F2F5FF;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 82, 255, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 82, 255, 0.4);
+}
+
+/* Selection */
+::selection {
+  background: rgba(0, 82, 255, 0.15);
+  color: #0D1424;
+}
+
+/* Terminal grid background — subtle on white */
+.terminal-bg {
+  background-color: #FFFFFF;
+  background-image: radial-gradient(circle, rgba(0,82,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Card panel */
+.panel {
+  background: #FFFFFF;
+  border: 1px solid rgba(0,82,255,0.12);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.panel-hover {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.panel-hover:hover {
+  border-color: rgba(0, 82, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(0,82,255,0.06), 0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* Glow text */
+.glow-text {
+  text-shadow: 0 0 16px rgba(0, 82, 255, 0.4);
+}
+
+/* Live pulse dot */
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00875A;
+  animation: pulseDot 2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(0, 135, 90, 0.5);
+}
+
+/* Probability bar fills */
+.prob-fill-home {
+  background: linear-gradient(90deg, #0052FF, #4080FF);
+}
+.prob-fill-draw {
+  background: linear-gradient(90deg, #B8920D, #E0B020);
+}
+.prob-fill-away {
+  background: linear-gradient(90deg, #D41F45, #E85075);
+}
+.prob-fill-yes {
+  background: linear-gradient(90deg, #00875A, #00B578);
+}
+.prob-fill-no {
+  background: linear-gradient(90deg, #D41F45, #E85075);
+}
+
+/* Ticker */
+.ticker-wrapper {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.ticker-track {
+  display: inline-block;
+  animation: ticker 50s linear infinite;
+}
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+/* Scan line effect for live */
+.scan-effect {
+  position: relative;
+  overflow: hidden;
+}
+.scan-effect::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,135,90,0.3), transparent);
+  animation: scanLine 3s linear infinite;
+}
+
+/* Input styling */
+.bb-input {
+  background: #F7F9FF;
+  border: 1px solid rgba(0,82,255,0.15);
+  border-radius: 6px;
+  color: #0D1424;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.bb-input:focus {
+  border-color: rgba(0,82,255,0.5);
+  box-shadow: 0 0 0 3px rgba(0,82,255,0.08);
+}
+.bb-input::placeholder {
+  color: #7B8FB5;
+}
+
+/* Number badge */
+.rank-badge {
+  font-family: var(--font-barlow);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* Chart tooltip override */
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+.recharts-default-tooltip {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(0,82,255,0.15) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+  color: #0D1424 !important;
+}
+
+/* Form dots */
+.form-w { color: #00875A; }
+.form-d { color: #B8920D; }
+.form-l { color: #D41F45; }
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(0,82,255,0.12); }
+  50% { box-shadow: 0 0 32px rgba(0,82,255,0.28); }
+}
+
+@keyframes scanLine {
+  0% { top: 0%; }
+  100% { top: 100%; }
+}
+
+/* =====================================================
+   SPORTS BETTING ANIMATIONS
+   ===================================================== */
+
+/* Floating chips */
+@keyframes float1 {
+  0%, 100% { transform: translateY(0px) rotate(-0.6deg); }
+  50%       { transform: translateY(-14px) rotate(0.6deg); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(-6px) rotate(0.6deg); }
+  50%       { transform: translateY(8px) rotate(-0.6deg); }
+}
+@keyframes float3 {
+  0%, 100% { transform: translateY(0px) rotate(0.4deg); }
+  50%       { transform: translateY(-10px) rotate(-0.4deg); }
+}
+@keyframes float4 {
+  0%, 100% { transform: translateY(-4px) rotate(-0.4deg); }
+  50%       { transform: translateY(10px) rotate(0.4deg); }
+}
+
+/* Live broadcast badge glow */
+@keyframes broadcastGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,135,90,0), 0 0 8px rgba(0,135,90,0.15); }
+  50%       { box-shadow: 0 0 0 7px rgba(0,135,90,0.07), 0 0 28px rgba(0,135,90,0.38); }
+}
+
+/* Radiating ring from live dot */
+@keyframes radiateOut {
+  0%   { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(3.2); opacity: 0; }
+}
+
+/* Shimmer sweep across text */
+@keyframes textShimmer {
+  0%   { background-position: -250% center; }
+  100% { background-position: 250% center; }
+}
+
+/* Hero grid slow drift */
+@keyframes heroDrift {
+  0%   { background-position: 0 0, 0 0; }
+  100% { background-position: 48px 48px, 48px 48px; }
+}
+
+/* Slide cards up on mount */
+@keyframes slideInUp {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Odds flash green */
+@keyframes oddsFlashUp {
+  0%,100% { background-color: transparent; }
+  35%      { background-color: rgba(0,135,90,0.18); }
+}
+
+/* Stat number pulse */
+@keyframes statPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Underline grow */
+@keyframes growLine {
+  0%   { transform: scaleX(0); transform-origin: left; }
+  100% { transform: scaleX(1); transform-origin: left; }
+}
+
+/* =====================================================
+   UTILITY CLASSES
+   ===================================================== */
+
+/* Animated hero grid */
+.hero-field-bg {
+  background-image:
+    linear-gradient(rgba(0,82,255,0.038) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,82,255,0.038) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: heroDrift 28s linear infinite;
+}
+
+/* Shimmer on the hero headline word */
+.shimmer-word {
+  background: linear-gradient(
+    90deg,
+    #0052FF 0%,
+    #4D90FF 35%,
+    #1A6AFF 50%,
+    #2B5CE6 65%,
+    #0052FF 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmer 4.5s linear infinite;
+}
+
+/* Broadcast glow badge */
+.broadcast-glow {
+  animation: broadcastGlow 2.8s ease-in-out infinite;
+}
+
+/* Radiating live indicator ring */
+.live-ring-outer {
+  position: relative;
+}
+.live-ring-outer::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,135,90,0.55);
+  animation: radiateOut 2.2s ease-out infinite;
+  pointer-events: none;
+}
+
+/* Float animations */
+.anim-float-1 { animation: float1 5.2s ease-in-out infinite; }
+.anim-float-2 { animation: float2 6.4s ease-in-out infinite 1s; }
+.anim-float-3 { animation: float3 5.8s ease-in-out infinite 1.8s; }
+.anim-float-4 { animation: float4 6.8s ease-in-out infinite 2.6s; }
+
+/* Stat card left borders */
+.stat-gold  { border-left: 3px solid rgba(184,146,13,0.55); }
+.stat-green { border-left: 3px solid rgba(0,135,90,0.55); }
+.stat-blue  { border-left: 3px solid rgba(0,82,255,0.55); }
+.stat-teal  { border-left: 3px solid rgba(0,151,167,0.55); }
+
+/* Animated section heading underline */
+.section-heading {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(to right, currentColor 0%, transparent 100%);
+  opacity: 0.25;
+  animation: growLine 0.6s ease-out both;
+}
+
+/* Hover shimmer sweep on buttons */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255,255,255,0.18) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+.btn-shimmer:hover::after {
+  transform: translateX(100%);
+}
+
+/* Slide-up stagger for grids */
+.stagger-grid > *:nth-child(1) { animation: slideInUp 0.4s ease-out 0.05s both; }
+.stagger-grid > *:nth-child(2) { animation: slideInUp 0.4s ease-out 0.12s both; }
+.stagger-grid > *:nth-child(3) { animation: slideInUp 0.4s ease-out 0.19s both; }
+.stagger-grid > *:nth-child(4) { animation: slideInUp 0.4s ease-out 0.26s both; }
+.stagger-grid > *:nth-child(5) { animation: slideInUp 0.4s ease-out 0.33s both; }
+.stagger-grid > *:nth-child(6) { animation: slideInUp 0.4s ease-out 0.40s both; }
+
+/* =====================================================
+   GLASSMORPHISM UTILITIES
+   ===================================================== */
+
+/* White glass — hero chips, badges on light backgrounds */
+.glass-white {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 4px 20px rgba(0, 82, 255, 0.06),
+    0 1px 0 rgba(255, 255, 255, 1) inset;
+}
+
+/* Dark glass — overlays on football image cards */
+.glass-dark {
+  background: rgba(9, 15, 30, 0.50);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.30),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+/* Blue glass — subtle tinted containers */
+.glass-blue {
+  background: rgba(0, 82, 255, 0.055);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(0, 82, 255, 0.16);
+}
+
+/* Flag circle glass — on dark/image card backgrounds */
+.glass-flag {
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.55) inset;
+}
+
+/* Card hover shimmer sweep (CSS fallback) */
+.card-hover-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.card-hover-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+  z-index: 30;
+}
+.card-hover-shimmer:hover::after {
+  transform: translateX(100%);
+}
