@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useAccount, useConnect, useDisconnect, useReadContract, useConnectors } from "wagmi";
 import { formatUnits } from "viem";
 import { Wallet, ChevronDown, Copy, LogOut, ExternalLink, Smartphone, X, ChevronRight } from "lucide-react";
@@ -35,6 +36,9 @@ function WalletPickerModal({ onClose }: { onClose: () => void }) {
   const connectors = useConnectors();
   const { connect, isPending } = useConnect();
   const [connecting, setConnecting] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   // Deduplicate: prefer EIP-6963 connectors over the base injected one
   const seen = new Set<string>();
@@ -56,9 +60,10 @@ function WalletPickerModal({ onClose }: { onClose: () => void }) {
     );
   };
 
-  return (
+  // Portal to document.body so fixed positioning isn't trapped by navbar's backdrop-blur stacking context
+  const modal = (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
@@ -137,6 +142,9 @@ function WalletPickerModal({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   );
+
+  if (!mounted) return null;
+  return createPortal(modal, document.body);
 }
 
 export default function WalletConnect() {

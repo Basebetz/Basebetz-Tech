@@ -13,6 +13,8 @@ const nextConfig = {
       "porto/internal": false,
       "@metamask/connect-evm": false,
       "@safe-global/safe-apps-sdk": false,
+      "@react-native-async-storage/async-storage": false,
+      "pino-pretty": false,
     };
     return config;
   },

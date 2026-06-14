@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Clock, TrendingUp, MapPin } from "lucide-react";
 import type { Match } from "@/lib/types";
@@ -232,15 +233,15 @@ export default function MatchCard({ match, featured, bgImage, nonClickable }: Ma
           </div>
 
           {/* Footer — stats only, never navigates */}
-          <div
+          {/* <div
             className={cn(
               "mt-4 pt-3 flex items-center justify-between",
               hasImg ? "border-t border-white/20" : "border-t border-bb-border"
             )}
             onClick={(e) => e.stopPropagation()}
             style={{ cursor: "default" }}
-          >
-            <div
+          > */}
+            {/* <div
               className={cn(
                 "flex items-center gap-1.5 text-xs font-mono",
                 hasImg ? "text-white/65" : "text-bb-text-3"
@@ -248,16 +249,16 @@ export default function MatchCard({ match, featured, bgImage, nonClickable }: Ma
             >
               <TrendingUp size={11} />
               <span>{formatVolume(match.totalVolume)} vol</span>
-            </div>
-            <span
+            </div> */}
+            {/* <span
               className={cn(
                 "text-xs font-mono",
                 hasImg ? "text-white/65" : "text-bb-text-3"
               )}
             >
               {match.marketCount} {match.marketCount === 1 ? "market" : "markets"}
-            </span>
-          </div>
+            </span> */}
+          {/* </div> */}
         </div>
       </div>
     </CardWrapper>
