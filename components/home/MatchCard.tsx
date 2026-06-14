@@ -11,23 +11,34 @@ interface MatchCardProps {
   featured?: boolean;
   /** When provided, the card uses this football image as background with gradient overlay */
   bgImage?: string;
+  /** Completed matches — card is display-only, no navigation */
+  nonClickable?: boolean;
 }
 
-export default function MatchCard({ match, featured, bgImage }: MatchCardProps) {
+export default function MatchCard({ match, featured, bgImage, nonClickable }: MatchCardProps) {
   const isLive = match.status === "live";
   const isFinished = match.status === "finished";
   const isScheduled = match.status === "scheduled";
   const hasImg = !!bgImage;
 
+  const CardWrapper = ({ children }: { children: React.ReactNode }) =>
+    nonClickable ? (
+      <div className="block h-full">{children}</div>
+    ) : (
+      <Link href={`/match/${match.id}`} className="block h-full">{children}</Link>
+    );
+
   return (
-    <Link href={`/match/${match.id}`} className="block h-full">
+    <CardWrapper>
       <div
         className={cn(
-          "relative overflow-hidden cursor-pointer transition-all duration-200 rounded-xl",
+          "relative overflow-hidden transition-all duration-200 rounded-xl",
+          nonClickable ? "cursor-default" : "cursor-pointer",
           hasImg
-            ? "hover:scale-[1.02] hover:shadow-xl"
+            ? !nonClickable && "hover:scale-[1.02] hover:shadow-xl"
             : [
-                "panel panel-hover p-5",
+                "panel p-5",
+                !nonClickable && "panel-hover",
                 isLive && "border-bb-green/30",
                 featured && "border-bb-blue/25",
               ]
@@ -220,12 +231,14 @@ export default function MatchCard({ match, featured, bgImage }: MatchCardProps) 
             </div>
           </div>
 
-          {/* Footer */}
+          {/* Footer — stats only, never navigates */}
           <div
             className={cn(
               "mt-4 pt-3 flex items-center justify-between",
               hasImg ? "border-t border-white/20" : "border-t border-bb-border"
             )}
+            onClick={(e) => e.stopPropagation()}
+            style={{ cursor: "default" }}
           >
             <div
               className={cn(
@@ -247,6 +260,6 @@ export default function MatchCard({ match, featured, bgImage }: MatchCardProps) 
           </div>
         </div>
       </div>
-    </Link>
+    </CardWrapper>
   );
 }

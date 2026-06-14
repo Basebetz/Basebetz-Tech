@@ -29,6 +29,15 @@ function contractError(err: unknown): string {
   return "Transaction failed. Try again.";
 }
 
+function claimError(err: unknown): string {
+  const msg = (err as { shortMessage?: string; message?: string })?.shortMessage
+    ?? (err as { message?: string })?.message ?? "";
+  if (msg.includes("User rejected") || msg.includes("rejected"))
+    return "Transaction cancelled.";
+  // Any other claim failure = oracle hasn't finalized yet
+  return "We're still calculating the win ratios. Please check back in a few minutes.";
+}
+
 export default function TradingPanel({ market }: TradingPanelProps) {
   const { address, isConnected } = useAccount();
 
@@ -177,7 +186,7 @@ export default function TradingPanel({ market }: TradingPanelProps) {
     setTxError(null);
     doClaim(
       { abi: PREDICTION_MARKET_ABI, address: contractAddress, functionName: "claimWinnings" },
-      { onError: (e) => setTxError(contractError(e)) }
+      { onError: (e) => setTxError(claimError(e)) }
     );
   };
 
@@ -374,20 +383,38 @@ export default function TradingPanel({ market }: TradingPanelProps) {
   }
 
   if (settled) {
+    // Oracle hasn't posted the result on-chain yet (match finished but cron pending)
+    const oracleReady = onChainSettled === true;
+
     return (
       <div className="panel p-5 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-heading font-bold text-bb-text uppercase tracking-wide text-sm">Market Settled</h3>
-          <span className="text-[10px] font-mono uppercase border border-bb-green/30 text-bb-green bg-bb-green/8 px-2 py-0.5 rounded">Settled</span>
+          <h3 className="font-heading font-bold text-bb-text uppercase tracking-wide text-sm">Match Complete</h3>
+          <span className={cn(
+            "text-[10px] font-mono uppercase px-2 py-0.5 rounded border",
+            oracleReady
+              ? "border-bb-green/30 text-bb-green bg-bb-green/8"
+              : "border-bb-gold/30 text-bb-gold bg-bb-gold/8"
+          )}>
+            {oracleReady ? "Settled" : "Finalising"}
+          </span>
         </div>
         <p className="text-bb-text-2 text-sm">{market.question}</p>
-        {market.settlementResult && (
+
+        {market.settlementResult && oracleReady && (
           <div className="bg-bb-green/8 border border-bb-green/25 rounded-lg p-3 text-center">
             <p className="text-bb-text-3 text-[10px] font-mono uppercase tracking-widest mb-1">Result</p>
             <p className="text-bb-green font-heading font-bold text-lg">{market.settlementResult}</p>
           </div>
         )}
-        {isWinner ? (
+
+        {!oracleReady ? (
+          <div className="py-4 text-center space-y-1">
+            <div className="w-5 h-5 rounded-full border-2 border-bb-gold/30 border-t-bb-gold animate-spin mx-auto mb-2" />
+            <p className="text-bb-text font-heading font-semibold text-sm">Calculating win ratios…</p>
+            <p className="text-bb-text-3 text-xs font-mono">Results are being verified. Check back in a few minutes.</p>
+          </div>
+        ) : isWinner ? (
           <div className="space-y-2">
             <div className="bg-bb-gold/8 border border-bb-gold/25 rounded-lg p-3 text-center">
               <p className="text-bb-text-3 text-[10px] font-mono uppercase tracking-widest mb-1">Your Winnings</p>
@@ -403,7 +430,10 @@ export default function TradingPanel({ market }: TradingPanelProps) {
         ) : (
           <p className="text-center text-bb-text-3 text-xs font-mono py-2">No winnings to claim for this wallet.</p>
         )}
-        {txError && <p className="text-bb-red text-xs font-mono text-center">{txError}</p>}
+
+        {txError && (
+          <p className="text-bb-red text-xs font-mono text-center">{txError}</p>
+        )}
       </div>
     );
   }

@@ -124,13 +124,13 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* ── RECENTLY SETTLED ─────────────────────────────────────── */}
+        {/* ── COMPLETED MATCHES ────────────────────────────────────── */}
         {finishedMatches.length > 0 && (
           <section className="mb-12">
             <ScrollReveal direction="left" className="flex items-center justify-between mb-5">
               <h2 className="section-heading font-heading font-bold text-xl text-bb-green uppercase tracking-wide">
                 <CheckCircle size={17} />
-                Recently Settled
+                Completed Matches
               </h2>
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded border border-bb-green/25 bg-bb-green/6 text-bb-green font-mono text-[11px] font-semibold uppercase tracking-widest">
                 <Target size={11} /> 100% accurate
@@ -142,6 +142,7 @@ export default async function HomePage() {
                   <MatchCard
                     match={m}
                     bgImage={SETTLED_BG_IMAGES[i % SETTLED_BG_IMAGES.length]}
+                    nonClickable
                   />
                 </AnimatedCard>
               ))}
