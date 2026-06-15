@@ -3,7 +3,49 @@ import { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FlagImage from "@/components/ui/FlagImage";
-import { Brain, AlertTriangle, TrendingUp, Zap, Search, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Brain, AlertTriangle, TrendingUp, Zap, Search, X, ChevronDown, ChevronUp, Loader2, Lock, Cpu } from "lucide-react";
+
+// ── Coming Soon gate ──────────────────────────────────────────────────────────
+function ComingSoonGate() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-24">
+        <div className="w-20 h-20 rounded-2xl border border-bb-teal/25 bg-bb-teal/6 flex items-center justify-center mb-6 relative">
+          <Brain size={36} className="text-bb-teal" />
+          <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full border border-bb-border bg-white flex items-center justify-center">
+            <Lock size={12} className="text-bb-text-3" />
+          </span>
+        </div>
+        <p className="text-bb-teal font-mono text-xs uppercase tracking-[0.3em] mb-3">Tech Update</p>
+        <h1 className="font-display font-black text-4xl sm:text-5xl text-bb-text mb-4 text-center">
+          AI Analytics
+        </h1>
+        <p className="text-bb-text-2 text-base font-mono text-center max-w-md mb-10 leading-relaxed">
+          Our AI prediction engine is currently being upgraded. The full intelligence layer — match signals, probability movers, injury impact, and expert consensus cards — will be available soon.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-xl w-full mb-10">
+          {[
+            { icon: Cpu,        label: "Probability signals",  detail: "Model vs. market price disagreement" },
+            { icon: TrendingUp, label: "Odds movers",         detail: "Volume spikes & probability shifts" },
+            { icon: Brain,      label: "Match intelligence",  detail: "Team form, injuries, xG, lineups" },
+          ].map(({ icon: Icon, label, detail }) => (
+            <div key={label} className="panel p-4 rounded-xl opacity-50 select-none">
+              <Icon size={16} className="text-bb-teal mb-2" />
+              <p className="text-bb-text text-sm font-heading font-semibold">{label}</p>
+              <p className="text-bb-text-3 text-[11px] font-mono mt-0.5">{detail}</p>
+            </div>
+          ))}
+        </div>
+        <span className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full border border-bb-teal/25 bg-bb-teal/6 text-bb-teal font-mono text-sm text-center">
+          <span className="w-2 h-2 rounded-full bg-bb-teal animate-pulse flex-shrink-0" />
+          Coming soon — check the roadmap for the launch date
+        </span>
+      </main>
+      <Footer />
+    </div>
+  );
+}
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { StoredPrediction } from "@/lib/types";
@@ -168,6 +210,10 @@ function GenerateCard({ match, onGenerated }: { match: Match; onGenerated: (p: S
 }
 
 export default function AnalyticsPage() {
+  // ── Tech update: hide behind coming-soon wall ─────────────────────────────
+  return <ComingSoonGate />;
+
+  // eslint-disable-next-line no-unreachable
   const [predictions, setPredictions] = useState<StoredPrediction[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);

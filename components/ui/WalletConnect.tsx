@@ -246,8 +246,10 @@ export default function WalletConnect() {
         className="flex items-center gap-2 bg-bb-navy border border-bb-border hover:border-bb-blue/40 text-bb-text text-sm px-3 py-2 rounded-[35px] transition-all"
       >
         <span className="w-2 h-2 rounded-full bg-bb-blue shadow-glow-sm" />
-        <span className="font-mono text-xs text-bb-text-2">{formatAddress(address!)}</span>
-        <span className="font-mono text-xs text-bb-green">{formattedBalance} USDC</span>
+        {/* Mobile: first 5 chars + ellipsis. Desktop: full shortened address + balance */}
+        <span className="sm:hidden font-mono text-xs text-bb-text-2">{address!.slice(0, 5)}…</span>
+        <span className="hidden sm:inline font-mono text-xs text-bb-text-2">{formatAddress(address!)}</span>
+        <span className="hidden sm:inline font-mono text-xs text-bb-green">{formattedBalance} USDC</span>
         <ChevronDown size={13} className={cn("text-bb-text-3 transition-transform", open && "rotate-180")} />
       </button>
 

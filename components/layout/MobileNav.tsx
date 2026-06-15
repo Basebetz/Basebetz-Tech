@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TrendingUp, Briefcase, Trophy, CalendarDays, Brain } from "lucide-react";
+import { TrendingUp, Briefcase, Trophy, CalendarDays, Map } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LEFT_LINKS = [
@@ -11,7 +11,7 @@ const LEFT_LINKS = [
 
 const RIGHT_LINKS = [
   { href: "/tournament", label: "Fixtures", icon: CalendarDays },
-  { href: "/analytics",  label: "AI",       icon: Brain },
+  { href: "/roadmap",    label: "Roadmap",  icon: Map },
 ];
 
 export default function MobileNav() {
@@ -27,7 +27,7 @@ export default function MobileNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 flex items-end"
+      className="md:hidden print:hidden fixed bottom-0 inset-x-0 z-50 flex items-end"
       style={{
         background: "#090F1E",
         borderTop: "1px solid rgba(255,255,255,0.07)",
